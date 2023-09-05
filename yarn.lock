@@ -1086,6 +1086,11 @@
   dependencies:
     "@types/superagent" "*"
 
+"@types/uuid@^9.0.3":
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.3.tgz#6cdd939b4316b4f81625de9f06028d848c4a1533"
+  integrity sha512-taHQQH/3ZyI3zP8M/puluDEIEvtQHVYcC6y3N8ijFtAd28+Ey/G4sg1u2gB01S8MwybLOKAp9/yCMu/uR5l3Ug==
+
 "@types/validator@^13.7.10":
   version "13.11.1"
   resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.11.1.tgz#6560af76ed54490e68c42f717ab4e742ba7be74b"
@@ -3404,7 +3409,7 @@ jsonwebtoken@9.0.0:
     ms "^2.1.1"
     semver "^7.3.8"
 
-jsonwebtoken@^9.0.0, jsonwebtoken@^9.0.2:
+jsonwebtoken@^9.0.0:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-9.0.2.tgz#65ff91f4abef1784697d40952bb1998c504caaf3"
   integrity sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==
