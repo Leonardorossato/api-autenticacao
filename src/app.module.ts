@@ -8,9 +8,10 @@ import { JwtModule } from '@nestjs/jwt';
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
+      global: true,
       secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: '5min',
+        expiresIn: '1h',
       },
     }),
     AuthModule,
