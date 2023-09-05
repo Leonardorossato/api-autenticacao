@@ -6,8 +6,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET,
+      secret: `${process.env.JWT_SECRET}`,
       signOptions: {
         expiresIn: '1h',
       },
