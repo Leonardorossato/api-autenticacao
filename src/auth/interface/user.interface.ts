@@ -6,3 +6,7 @@ export interface User {
   email: string;
   password: string;
 }
+
+export interface RefreshToken extends User {
+  refreshToken?: string;
+}
