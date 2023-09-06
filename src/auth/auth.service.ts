@@ -1,18 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { RegisterAuthDto } from './dto/register-auth.dto';
-import { User } from './interface/user.interface';
-import * as bcrypt from 'bcryptjs';
-import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-
+import { LoginAuthDto } from './dto/login-auth.dto';
+import { RegisterAuthDto } from './dto/register-auth.dto';
+import { RefreshToken, User } from './interface/user.interface';
+import { Request, Response } from 'express';
 @Injectable()
 export class AuthService {
-  private readonly users: User[] = [];
+  private readonly users: RefreshToken[] = [];
 
   constructor(private readonly jwtService: JwtService) {}
 
-  async login(dto: LoginAuthDto) {
+  async login(dto: LoginAuthDto, res: Response) {
     try {
       const { email, password } = dto;
       const user = await this.findUserByEmail(email);
@@ -25,16 +25,24 @@ export class AuthService {
           'Password doesent match',
           HttpStatus.UNAUTHORIZED,
         );
-      }
-      const token = await this.generateToken(
-        user.id,
-        user.email,
-        user.password,
-      );
+      } else {
+        const refreshToken = this.generateRefreshToken(
+          user.id,
+          user.email,
+          user.password,
+        );
 
-      return {
-        token: token,
-      };
+        user.refreshToken = refreshToken;
+
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          maxAge: 72 * 60 * 60 * 1000,
+        });
+
+        const token = this.generateToken(user.id, user.email, user.password);
+
+        return res.status(200).json({ token: token });
+      }
     } catch (error) {
       throw new HttpException('Error generating token', HttpStatus.BAD_REQUEST);
     }
@@ -63,6 +71,36 @@ export class AuthService {
     }
   }
 
+  async logOut(req: Request, res: Response) {
+    try {
+      const cookie = req.cookies;
+      if (cookie?.RefreshToken) {
+        throw new HttpException(
+          'No refresh token in cookie',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const refreshToken = cookie.refreshToken;
+      const user = this.users.find(
+        (user) => user.refreshToken === refreshToken,
+      );
+      if (user) {
+        throw new HttpException(
+          'No refresh token present in user',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      res.clearCookie('refreshToken');
+      return res.status(200).json({ message: 'Logout successfully.' });
+    } catch (error) {
+      throw new HttpException(
+        'Error generating refresh Token',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   private create(dto: User) {
     const id = uuidv4();
     dto.id = id;
@@ -74,6 +112,20 @@ export class AuthService {
   }
 
   private generateToken(id: string, email: string, password: string) {
+    const payload = {
+      id,
+      email,
+      password,
+    };
+
+    if (!payload) {
+      return null;
+    }
+
+    return this.jwtService.sign(payload);
+  }
+
+  private generateRefreshToken(id: string, email: string, password: string) {
     const payload = {
       id,
       email,
