@@ -85,13 +85,13 @@ export class AuthService {
       const user = this.users.find(
         (user) => user.refreshToken === refreshToken,
       );
-      if (user) {
+      if (!user) {
         throw new HttpException(
           'No refresh token present in user',
           HttpStatus.BAD_REQUEST,
         );
       }
-      res.clearCookie('refreshToken', refreshToken);
+      res.clearCookie('refreshToken');
       return res.status(200).json({ message: 'Logout successfully.' });
     } catch (error) {
       throw new HttpException(
