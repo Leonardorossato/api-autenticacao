@@ -74,7 +74,7 @@ export class AuthService {
   async logOut(req: Request, res: Response) {
     try {
       const cookie = req.cookies;
-      if (cookie?.RefreshToken) {
+      if (!cookie?.refreshToken) {
         throw new HttpException(
           'No refresh token in cookie',
           HttpStatus.BAD_REQUEST,
@@ -91,11 +91,11 @@ export class AuthService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', refreshToken);
       return res.status(200).json({ message: 'Logout successfully.' });
     } catch (error) {
       throw new HttpException(
-        'Error generating refresh Token',
+        'Error to clear refresh Token',
         HttpStatus.BAD_REQUEST,
       );
     }
