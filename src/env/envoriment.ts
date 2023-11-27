@@ -7,6 +7,10 @@ declare global {
     interface ProcessEnv {
       APP_PORT: number;
       JWT_SECRET: string;
+      NODEMAILER_HOST: string;
+      NODEMAILER_PORT: number;
+      NODEMAILER_USER: string;
+      NODEMAILER_PASSWORD: string;
     }
   }
 }

@@ -4,7 +4,10 @@ import { ForbiddenException } from 'src/core/exceptions';
 import { RegisterDto } from './register-user.dto';
 
 import * as bcrypt from 'bcrypt';
-import { AuthRepositoryInterface, User } from 'src/auth/repositories/auth.repository.interface';
+import {
+  AuthRepositoryInterface,
+  User,
+} from 'src/auth/repositories/auth.repository.interface';
 
 @Injectable()
 export class RegisterUserUseCase {
@@ -21,7 +24,7 @@ export class RegisterUserUseCase {
     }
 
     const email = await this.authRepository.findByEmail(data.email);
-    if (email) {
+    if (!email) {
       return Result.fail(new ForbiddenException('Email existent'));
     }
 

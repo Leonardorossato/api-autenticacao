@@ -48,4 +48,6 @@ export interface UserDomainInterface {
   email: string;
   password: string;
   isAdmin?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

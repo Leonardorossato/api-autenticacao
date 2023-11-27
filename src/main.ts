@@ -13,10 +13,10 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
-  await app.listen(process.env.PORT).then(() => {
+  SwaggerModule.setup('docs', app, document);
+  await app.listen(process.env.APP_PORT).then(() => {
     console.log(
-      `Server is running on port: http://localhost:${process.env.PORT}/docs`,
+      `Server is running on: http://localhost:${process.env.APP_PORT}/docs`,
     );
   });
 }
